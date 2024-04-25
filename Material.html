@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jalaram Manufacturing Dashboard</title> <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css">
+  <style>
+    /* Custom styles for enhanced professionalism (consider using a separate CSS file) */
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe MDL2 Assets";
+    }
+
+    .menu-item.active > a { /* Style for active menu items (optional) */
+      background-color: #e5e7eb; /* Light gray background */
+      color: #202124; /* Darker text for contrast */
+    }
+
+    .nested-webpage iframe { /* Style for iframes (optional) */
+      border: none; /* Remove default border */
+      border-radius: 14px; /* Add subtle rounded corners */
+    }
+  </style>
+</head>
+
+<body class="font-sans flex flex-col min-h-screen bg-gray-100">
+
+  <nav class="bg-gradient-to-r from-purple-600 to-indigo-600 text-white px-6 py-4 flex justify-between items-center shadow">
+    <h1 class="text-2xl font-semibold">Jalaram Dashboard</h1>
+    <div>
+      <button class="flex items-center space-x-1 bg-purple-500 hover:bg-purple-700 px-4 py-2 rounded-md shadow">
+        <i class="material-icons">person</i>
+        <span>Profile</span>
+      </button>
+    </div>
+  </nav>
+
+  <main class="flex flex-grow">
+
+    <aside class="bg-gray-800 text-white h-screen w-64 py-4 px-6">
+        <ul class="space-y-3">
+            <li class="menu-item">
+                <a href="#" class="flex items-center py-2 px-2 text-sm hover:text-gray-300">
+                    <i class="material-icons">assignment</i>
+                    <span class="ml-2">Production</span>
+                </a>
+                <!-- Submenu -->
+                <ul class="submenu hidden">
+                    <li><a href="Dashbord.html" class="block px-4 py-2 text-gray-300 hover:text-white">All Units</a></li>
+                    <li><a href="PGN.html" class="block px-4 py-2 text-gray-300 hover:text-white">Patanjali</a></li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="flex items-center py-2 px-2 text-sm hover:text-gray-300">
+                    <i class="material-icons">assignment</i>
+                    <span class="ml-2">Tasks</span>
+                </a>
+                <!-- Submenu -->
+                <ul class="submenu hidden">
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 1</a></li>
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 2</a></li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="flex items-center py-2 px-2 text-sm hover:text-gray-300">
+                    <i class="material-icons">event</i>
+                    <span class="ml-2">Calendar</span>
+                </a>
+                <!-- Submenu -->
+                <ul class="submenu hidden">
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 1</a></li>
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 2</a></li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="flex items-center py-2 px-2 text-sm hover:text-gray-300">
+                    <i class="material-icons">insert_chart</i>
+                    <span class="ml-2">Reports</span>
+                </a>
+                <!-- Submenu -->
+                <ul class="submenu hidden">
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 1</a></li>
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 2</a></li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="flex items-center py-2 px-2 text-sm hover:text-gray-300">
+                    <i class="material-icons">email</i>
+                    <span class="ml-2">Messages</span>
+                </a>
+                <!-- Submenu -->
+                <ul class="submenu hidden">
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 1</a></li>
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 2</a></li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="flex items-center py-2 px-2 text-sm hover:text-gray-300">
+                    <i class="material-icons">people</i>
+                    <span class="ml-2">Employees</span>
+                </a>
+                <!-- Submenu -->
+                <ul class="submenu hidden">
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 1</a></li>
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 2</a></li>
+                </ul>
+            </li>
+            <li class="menu-item">
+                <a href="#" class="flex items-center py-2 px-2 text-sm hover:text-gray-300">
+                    <i class="material-icons">people</i>
+                    <span class="ml-2">Vehicle</span>
+                </a>
+                <!-- Submenu -->
+                <ul class="submenu hidden">
+                    <li><a href="Vehicle.html" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 1</a></li>
+                    <li><a href="#" class="block px-4 py-2 text-gray-300 hover:text-white">Menu 2</a></li>
+                </ul>
+            </li>
+        </ul>
+    </aside>
+
+
+
+    <section class="flex-grow px-6 py-4 overflow-auto">
+        <h2 class="text-2xl font-semibold mb-4">Jalaram Production</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-gray-200 p-6 rounded-md shadow-lg hover:shadow-xl transition duration-300">
+                <h3 class="text-xl font-semibold mb-2">Daily Production</h3>
+                <iframe src="DAILY.html" width="100%" height="500"></iframe>
+            </div>
+            <div class="bg-gray-200 p-6 rounded-md shadow-lg hover:shadow-xl transition duration-300">
+                <h3 class="text-xl font-semibold mb-2">Financial Year Report</h3>
+                <iframe src="FY.html" width="100%" height="500"></iframe>
+            </div>
+        </div>
+    </section>
+  </main>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const menuItems = document.querySelectorAll('.menu-item');
+
+      menuItems.forEach(item => {
+        const submenu = item.querySelector('.submenu');
+        if (submenu) {
+          item.addEventListener('click', () => {
+            submenu.classList.toggle('hidden');
+            item.classList.toggle('active'); // Add/remove active class for visual feedback (optional)
+          });
+        }
+      });
+
+      window.addEventListener('click', function (event) {
+        menuItems.forEach(item => {
+          const submenu = item.querySelector('.submenu');
+          if (submenu && !item.contains(event.target)) {
+            submenu.classList.add('hidden');
+            item.classList.remove('active'); // Remove active class on outside click (optional)
+          }
+        });
+      });
+    });
+  </script>
+
+</body>
+
+</html>
+

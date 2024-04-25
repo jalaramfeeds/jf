@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Jalaram Dashboard</title>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="./img/svg/logo.svg" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset CSS */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Basic styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* Header styles */
+    header {
+      background-color: #180403;
+      color: #fff;
+      padding: 10px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin-bottom: 10px;
+    }
+
+    /* Main content styles */
+    .main-content {
+      padding: 20px;
+      overflow-x: auto; /* Enable horizontal scrolling for small screens */
+    }
+
+    /* Table styles */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 20px;
+    }
+
+    th, td {
+      padding: 10px;
+      border: 1px solid #ddd;
+      text-align: left;
+    }
+
+    th {
+      background-color: #f2f2f2;
+      font-weight: bold;
+      cursor: pointer; /* Add cursor pointer for sorting */
+    }
+
+    tr:hover {
+      background-color: #f2f2f2; /* Add hover effect for rows */
+    }
+
+    tr:nth-child(even) {
+      background-color: #f9f9f9; /* Add alternating row colors */
+    }
+
+    /* Footer styles */
+    tfoot {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Jalaram Feeds</h1>
+  </header>
+
+  <!-- Main content -->
+  <div class="main-content">
+    <!-- Table -->
+    <table>
+      <!-- Table headers -->
+      <thead>
+        <tr>
+          <th>Month</th>
+          <th>K-41</th>
+          <th>CATTLE FEED</th>
+          <th>MAIZE GRANDING</th>
+          <!-- Add more th elements for other columns -->
+          <th>BY PASS</th>
+          <th>GOLD CHIPS FORMULA</th>
+          <th>G CHIPS CAKE</th>
+          <th>P KONDA KANKI GRANDING</th>
+          <th>K-31</th>
+          <th>MASH</th>
+          <th>PELLET-4 MM</th>
+          <th>PELLET-6 MM</th>
+          <th>M9</th>
+          <th>ROOMA</th>
+          <th>ACE</th>
+          <th>SIMRAN</th>
+          <th>NUTRI</th>
+          <th>Rohini</th>
+          <th>N101/1</th>
+          <th>BARAMATI</th>
+          <th>SAMPOOR</th>
+          <th>SIMRANI-101</th>
+          <th>TPAU</th>
+          <th>T.Chuni F 50</th>
+          <th>CHANA CHUNI F 50</th>
+          <th>T. Chuni F 48</th>
+          <th>Chana Chuni F 48</th>
+          <th>Pala (S) 50</th>
+          <th>Pala (H) 50</th>
+          <th>Makka Chuni</th>
+          <th>Makka Tukdi</th>
+        </tr>
+      </thead>
+      <!-- Table body will be populated dynamically -->
+      <tbody id="tableBody"></tbody>
+      <!-- Table footer for monthly sums -->
+      <tfoot id="tableFooter"></tfoot>
+    </table>
+  </div>
+
+  <!-- JavaScript libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script>
+   $(document).ready(function() {
+  // Fetch data from the provided URL
+  fetch('https://script.google.com/macros/s/AKfycbwyh5aMpAyOJFePJkXwtfrRQZ2l4J-IW2QKGrRwb52XzZTiuI9EgNWzbR0BdnrnHJxuSA/exec')
+    .then(res => {
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+      return res.json();
+    })
+    .then(data => {
+      let tbody = $('#tableBody');
+      let monthlySums = {};
+
+      data.content.forEach(row => {
+        let date = moment(row[0], moment.ISO_8601);
+        let month = date.format('MMM-YY'); // Modified format to "Oct-23"
+
+        if (!monthlySums[month]) {
+          monthlySums[month] = {};
+        }
+
+        for (let i = 1; i < row.length; i++) {
+          let columnValue = parseFloat(row[i]) || 0;
+          if (!monthlySums[month][i]) {
+            monthlySums[month][i] = 0;
+          }
+          monthlySums[month][i] += columnValue;
+        }
+      });
+
+      // Calculate and display monthly sums
+      displayMonthlySums(monthlySums);
+    })
+    .catch(e => {
+      console.log('There was a problem with the fetch operation: ' + e.message);
+    });
+
+  // Function to display monthly sums in the footer
+  function displayMonthlySums(monthlySums) {
+    let tfoot = $('#tableFooter');
+    tfoot.empty();
+
+    Object.keys(monthlySums).forEach(month => {
+      let tr = $('<tr></tr>');
+      tr.append(`<td>${month}</td>`);
+      Object.keys(monthlySums[month]).forEach(columnIndex => {
+        tr.append(`<td>${monthlySums[month][columnIndex].toFixed(2)}</td>`);
+      });
+      tfoot.append(tr);
+    });
+  }
+});
+  </script>
+</body>
+</html>

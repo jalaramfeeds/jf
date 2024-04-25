@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Delegation Dashboard</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+  <style>
+    /* Global styles */
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Styles for the sidebar */
+    .sidebar {
+      height: 100vh;
+      width: 240px; /* Adjusted sidebar width */
+      position: fixed;
+      top: 0;
+      left: 0;
+      background-color: #252f3f; /* Dark blue background */
+      padding-top: 20px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      transition: width 0.3s ease; /* Add transition for smoother sidebar animation */
+    }
+
+    .sidebar:hover {
+      width: 260px; /* Expand sidebar on hover */
+    }
+
+    .sidebar ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar ul li {
+      padding: 10px 15px;
+      border-bottom: 1px solid #374151; /* Darker border color */
+    }
+
+    .sidebar ul li a {
+      text-decoration: none;
+      color: #d1d5db; /* Light text color */
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+    }
+
+    .sidebar ul li a i {
+      margin-right: 10px;
+    }
+
+    .sidebar ul li:hover,
+    .sidebar ul li.active {
+      background-color: #374151; /* Darker background color on hover/active */
+    }
+
+    /* Styles for submenu */
+    .submenu {
+      display: none;
+      padding-left: 20px;
+    }
+
+    .sidebar ul li.active .submenu {
+      display: block;
+    }
+
+    /* Content area styles */
+    #content {
+      margin-left: 260px; /* Ensure content doesn't overlap with sidebar */
+      padding: 20px;
+    }
+
+    /* Custom button styles */
+    .btn {
+      background-color: #4c51bf; /* Purple button color */
+      color: #fff; /* White text color */
+      border: none;
+      padding: 10px 20px;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .btn:hover {
+      background-color: #4338ca; /* Darker purple on hover */
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <ul>
+      <li class="menu-item">
+        <a href="#"><i class="fas fa-home"></i> Master</a> <!-- Icon for Master -->
+        <ul class="submenu">
+          <li><a href="client.html">Client</a></li>
+          <li><a href="parts.html">Parts</a></li>
+          <li><a href="brand.html">Brand</a></li>
+          <li><a href="city.html">City</a></li>
+        </ul>
+      </li>
+      <li class="menu-item">
+        <a href="#"><i class="fas fa-calendar"></i> Service Due</a> <!-- Icon for Service Due -->
+        <ul class="submenu">
+          <li><a href="#">Service A</a></li>
+          <li><a href="#">Service B</a></li>
+          <li><a href="#">Service C</a></li>
+          <!-- Add more submenu items here if needed -->
+        </ul>
+      </li>
+      <li class="menu-item">
+        <a href="#"><i class="fas fa-money-bill"></i> Pending Amount</a> <!-- Icon for Pending Amount -->
+        <ul class="submenu">
+          <li><a href="#">Amount A</a></li>
+          <li><a href="#">Amount B</a></li>
+          <li><a href="#">Amount C</a></li>
+          <!-- Add more submenu items here if needed -->
+        </ul>
+      </li>
+      <li class="menu-item">
+        <a href="#"><i class="fas fa-history"></i> History</a> <!-- Icon for History -->
+        <ul class="submenu">
+          <li><a href="#">History A</a></li>
+          <li><a href="#">History B</a></li>
+          <li><a href="#">History C</a></li>
+          <!-- Add more submenu items here if needed -->
+        </ul>
+      </li>
+      <li class="menu-item">
+        <a href="#"><i class="fas fa-chart-pie"></i> Summary</a> <!-- Icon for Summary -->
+        <ul class="submenu">
+          <li><a href="#">Summary A</a></li>
+          <li><a href="#">Summary B</a></li>
+          <li><a href="#">Summary C</a></li>
+          <!-- Add more submenu items here if needed -->
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <div id="content">
+    <!-- Content goes here -->
+    <div class="container mx-auto py-8"> <!-- Added container class -->
+      <h1 class="text-center text-3xl font-semibold text-gray-800 mb-8">City Information Form</h1>
+      <form id="clientForm" class="max-w-md mx-auto bg-white p-8 rounded-lg shadow-md">
+        <div class="mb-6">
+          <label for="name" class="block text-sm font-medium text-gray-700">City Name:</label>
+          <input type="text" id="name" name="name" required
+                 class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring focus:ring-blue-400 focus:outline-none">
+        </div>
+
+        
+
+        <div class="mb-6">
+          <label for="additional_info" class="block text-sm font-medium text-gray-700">Additional Information:</label>
+          <textarea id="additional_info" name="additional_info"
+                    class="mt-1 p-2 w-full border border-gray-300 rounded-md focus:ring focus:ring-blue-400 focus:outline-none"></textarea>
+        </div>
+
+        <div class="flex justify-end">
+          <button type="submit"
+                  class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+            Submit
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const menuItems = document.querySelectorAll('.menu-item');
+
+    menuItems.forEach(item => {
+      item.addEventListener('click', () => {
+        if (item.classList.contains('active')) {
+          item.classList.remove('active');
+        } else {
+          const activeItem = document.querySelector('.menu-item.active');
+          if (activeItem) {
+            activeItem.classList.remove('active');
+          }
+          item.classList.add('active');
+        }
+      });
+    });
+
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbx9IUrK7i1aoMvolehjtXVAK05EWGBy2wEMo42y3VN2uIwNA_WgZ4KAf5jCMhqNF3TplQ/exec';
+    const form = document.getElementById('clientForm');
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+      fetch(scriptURL, { method: 'POST', body: new FormData(form) })
+          .then(response => {
+            if (response.ok) {
+              alert("Thank you! Your form has been submitted successfully.");
+              form.reset(); // Reset the form after successful submission
+            } else {
+              alert("There was a problem submitting your form. Please try again later.");
+            }
+          })
+          .catch(error => console.error('Error!', error.message));
+    });
+  </script>
+</body>
+</html>

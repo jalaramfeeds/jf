@@ -1,0 +1,45 @@
+
+
+Function Dopo
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function doPost(e) {
+    try {
+      // Check if 'e' is defined and has 'parameters' property
+      if (typeof e !== 'undefined' && e.hasOwnProperty('parameters')) {
+        // Open the Google Sheet by URL
+        let MySheet = SpreadsheetApp.openByUrl("https://docs.google.com/spreadsheets/d/17udAdv9o64YRCEWQxwidEEDenlP0Hx34TTnZo33kfqA/edit#gid=0");
+  
+        // Get the sheet named "Inv"
+        let InvSheet = MySheet.getSheetByName("Inv");
+  
+        // Extract data from the POST request parameters
+        let Inv = e.parameters;
+  
+        // Append row for invoice header
+        InvSheet.appendRow([Inv.invoice_no[0], Inv.invoice_date[0], Inv.customer_name[0], Inv.address[0], Inv.phone[0], Inv.email[0], Inv.gst_number[0], Inv.payment_method[0]]);
+  
+        
+  
+          // Return a response indicating successful data submission
+          return ContentService.createTextOutput("Data Submitted");
+        
+  
+  
+  
+  function doGet() {
+    return HtmlService.createHtmlOutputFromFile('index');
+  }

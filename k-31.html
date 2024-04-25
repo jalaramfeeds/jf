@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Jalaram Dashboard</title>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="./img/svg/logo.svg" type="image/x-icon">
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+</head>
+<body>
+  <header class="bg-dark text-white">
+    <div class="container text-center">
+      <h1>k-31</h1>
+    </div>
+  </header>
+
+  <div class="container mt-5">
+    <div class="row">
+      <!-- Financial year dropdown -->
+      <div class="col-md-12 mb-3">
+        <select id="financialYearSelect" class="form-select">
+          <!-- Options will be populated dynamically -->
+        </select>
+      </div>
+
+      <!-- Table column -->
+      <div class="col-md-6">
+        <table class="table table-striped table-sm table-custom">
+          <!-- Table headers -->
+          <thead class="table-header-center">
+            <tr>
+              <th>Month</th>
+              <th>MASH</th>
+              <th>PELLET-4 MM</th>
+              <th>PELLET-6 MM</th>
+            </tr>
+          </thead>
+          <!-- Table body will be populated dynamically -->
+          <tbody id="tableBody"></tbody>
+          <!-- Table footer for monthly sums -->
+          <tfoot id="tableFooter"></tfoot>
+        </table>
+      </div>
+
+      <!-- Chart column -->
+      <div class="col-md-6">
+        <div id="chartContainer">
+          <canvas id="myChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      const financialYearSelect = $('#financialYearSelect');
+
+      // Function to fetch data for the selected financial year
+      function fetchDataForFinancialYear(financialYear) {
+        // Extract start and end years from the financial year string
+        const [startYearStr, endYearStr] = financialYear.split('-');
+        const startYear = parseInt(startYearStr);
+        const endYear = parseInt(endYearStr);
+
+        // Adjust start and end dates to April of the start year and March of the end year
+        const startDate = new Date(startYear, 3 - 1, 1); // April is month 3 (0-indexed)
+        const endDate = new Date(endYear, 3 - 1, 31); // March 31st of the end year
+
+        // Format start and end dates as YYYY-MM-DD strings
+        const startDateStr = startDate.toISOString().split('T')[0];
+        const endDateStr = endDate.toISOString().split('T')[0];
+
+        // Fetch data for the adjusted financial year
+        fetch(`https://script.google.com/macros/s/AKfycbwyh5aMpAyOJFePJkXwtfrRQZ2l4J-IW2QKGrRwb52XzZTiuI9EgNWzbR0BdnrnHJxuSA/exec?startDate=${startDateStr}&endDate=${endDateStr}`)
+          .then(res => {
+            if (!res.ok) {
+              throw new Error(`Failed to fetch data for ${financialYear}.`);
+            }
+            return res.json();
+          })
+          .then(data => {
+            let tbody = $('#tableBody');
+            let monthlySums = {};
+
+            data.content.forEach(row => {
+              let date = moment(row[0], moment.ISO_8601);
+              let month = date.format('MMM-YY'); // Modified format to "Oct-23"
+
+              if (!monthlySums[month]) {
+                monthlySums[month] = { MASH: 0, PELLET4: 0, PELLET6: 0 };
+              }
+              // Sum the values for each column
+              monthlySums[month].MASH += parseFloat(row[9]) || 0; // Column 10
+              monthlySums[month].PELLET4 += parseFloat(row[10]) || 0; // Column 11
+              monthlySums[month].PELLET6 += parseFloat(row[11]) || 0; // Column 12
+            });
+
+            // Display monthly sums
+            displayMonthlySums(monthlySums);
+
+            // Draw chart
+            drawChart(monthlySums);
+          })
+          .catch(e => {
+            console.error(`Error fetching data for ${financialYear}: ${e.message}`);
+          });
+      }
+
+      // Function to display available financial years in the dropdown
+      function displayFinancialYears() {
+        const options = [];
+        const currentYear = new Date().getFullYear();
+        // Assuming the data starts from April of 2023
+        for (let i = 2023; i <= currentYear; i++) {
+          const startYear = i;
+          const endYear = i + 1;
+          const financialYear = `${startYear}-${endYear.toString().slice(2)}`;
+          options.push(`<option value="${financialYear}">${financialYear}</option>`);
+        }
+        financialYearSelect.html(options.join(''));
+      }
+
+      // Set the default financial year to the current financial year
+      const currentYear = new Date().getFullYear();
+      const defaultFinancialYear = `${currentYear}-${(currentYear + 1).toString().slice(2)}`;
+      financialYearSelect.val(defaultFinancialYear);
+
+      // Display financial years and fetch data for the default financial year
+      displayFinancialYears();
+      fetchDataForFinancialYear(defaultFinancialYear);
+
+      // Handle change event of the financial year dropdown
+      financialYearSelect.on('change', function() {
+        const selectedFinancialYear = $(this).val();
+        fetchDataForFinancialYear(selectedFinancialYear);
+      });
+
+      function displayMonthlySums(monthlySums) {
+        let tbody = $('#tableBody');
+        tbody.empty(); // Clear existing table rows
+        for (const month in monthlySums) {
+          if (Object.hasOwnProperty.call(monthlySums, month)) {
+            const sums = monthlySums[month];
+            let tr = $('<tr></tr>');
+            tr.append(`<td>${month}</td>`); // Display month
+            tr.append(`<td>${sums.MASH.toFixed(2)}</td>`); // Display MASH sum with 2 decimal places
+            tr.append(`<td>${sums.PELLET4.toFixed(2)}</td>`); // Display PELLET-4 MM sum with 2 decimal places
+            tr.append(`<td>${sums.PELLET6.toFixed(2)}</td>`); // Display PELLET-6 MM sum with 2 decimal places
+            tbody.append(tr);
+          }
+        }
+      }
+
+      function drawChart(monthlySums) {
+        const months = Object.keys(monthlySums);
+        const mashData = months.map(month => monthlySums[month].MASH.toFixed(2));
+        const pellet4Data = months.map(month => monthlySums[month].PELLET4.toFixed(2));
+        const pellet6Data = months.map(month => monthlySums[month].PELLET6.toFixed(2));
+
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var myChart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: months,
+            datasets: [{
+              label: 'MASH',
+              data: mashData,
+              backgroundColor: 'rgba(255, 99, 132, 0.2)',
+              borderColor: 'rgba(255, 99, 132, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'PELLET-4 MM',
+              data: pellet4Data,
+              backgroundColor: 'rgba(75, 192, 192, 0.2)',
+              borderColor: 'rgba(54, 162, 235, 1)',
+              borderWidth: 1
+            },
+            {
+              label: 'PELLET-6 MM',
+              data: pellet6Data,
+              backgroundColor: 'rgba(255, 206, 86, 0.2)',
+              borderColor: 'rgba(255, 206, 86, 1)',
+              borderWidth: 1
+            }]
+          },
+          options: {
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      }
+    });
+  </script>
+</body>
+</html>
+

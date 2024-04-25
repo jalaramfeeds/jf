@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Jalaram Dashboard</title>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="./img/svg/logo.svg" type="image/x-icon">
+  <!-- Bootstrap CSS -->
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Custom CSS */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      margin: 0;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+  <header class="bg-dark text-white">
+    <div class="container text-center">
+      <h1>M9</h1>
+    </div>
+  </header>
+
+  <div class="container mt-5">
+    <!-- Table -->
+    <table class="table table-striped">
+      <!-- Table headers -->
+      <thead class="thead-dark">
+        <tr>
+          <th>Month</th>
+          <th>ROOMA</th>
+          <th>ACE</th>
+          <th>SIMRAN</th>
+          <th>NUTRI</th>
+          <th>Rohini</th>
+        </tr>
+      </thead>
+      <!-- Table body will be populated dynamically -->
+      <tbody id="tableBody"></tbody>
+      <!-- Table footer for monthly sums -->
+      <tfoot id="tableFooter"></tfoot>
+    </table>
+  </div>
+
+  <!-- JavaScript Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <!-- Bootstrap Bundle JS -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      // Fetch data from the provided URL
+      fetch('https://script.google.com/macros/s/AKfycbwyh5aMpAyOJFePJkXwtfrRQZ2l4J-IW2QKGrRwb52XzZTiuI9EgNWzbR0BdnrnHJxuSA/exec')
+      .then(res => {
+          if (!res.ok) {
+            throw new Error(`HTTP error! status: ${res.status}`);
+          }
+          return res.json();
+        })
+        .then(data => {
+          let tbody = $('#tableBody');
+          let monthlySums = {};
+
+          data.content.forEach(row => {
+            let date = moment(row[0], moment.ISO_8601);
+            let month = date.format('MMM-YY'); // Modified format to "Oct-23"
+
+            if (!monthlySums[month]) {
+              monthlySums[month] = { ROOMA: 0, ACE: 0, SIMRAN: 0, NUTRI: 0, Rohini: 0 };
+            }
+            // Sum the values for each column
+           
+            monthlySums[month].ROOMA += parseFloat(row[13]) || 0; // Column 17
+            monthlySums[month].ACE += parseFloat(row[14]) || 0; // Column 18
+            monthlySums[month].SIMRAN += parseFloat(row[15]) || 0; // Column 19
+            monthlySums[month].NUTRI += parseFloat(row[16]) || 0; // Column 20
+            monthlySums[month].Rohini += parseFloat(row[17]) || 0; // Column 21
+          });
+
+          // Display monthly sums
+          displayMonthlySums(monthlySums);
+        })
+        .catch(e => {
+          console.log('There was a problem with the fetch operation: ' + e.message);
+        });
+
+        function displayMonthlySums(monthlySums) {
+    let tbody = $('#tableBody');
+    for (const month in monthlySums) {
+        if (Object.hasOwnProperty.call(monthlySums, month)) {
+            const sums = monthlySums[month];
+            let tr = $('<tr></tr>');
+            tr.append(`<td>${month}</td>`); // Display month
+            tr.append(`<td>${sums.ROOMA.toFixed(2)}</td>`); // Display ROOMA sum with 2 decimal places
+            tr.append(`<td>${sums.ACE.toFixed(2)}</td>`); // Display ACE sum with 2 decimal places
+            tr.append(`<td>${sums.SIMRAN.toFixed(2)}</td>`); // Display SIMRAN sum with 2 decimal places
+            tr.append(`<td>${sums.NUTRI.toFixed(2)}</td>`); // Display NUTRI sum with 2 decimal places
+            tr.append(`<td>${sums.Rohini.toFixed(2)}</td>`); // Display Rohini sum with 2 decimal places
+            tbody.append(tr);
+        }
+    }
+}
+    });
+  </script>
+</body>
+</html>

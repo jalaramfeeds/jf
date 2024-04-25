@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jalaram Feeds</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS for background and table styling -->
+    <style>
+         /* Background color */
+         body {
+            background-color: #f8f9fa; /* Light gray background color */
+            font-family: 'Roboto', sans-serif; /* Custom font */
+            margin: 0;
+            padding: 0;
+        }
+
+        /* Table header color */
+        .thead-custom {
+            background-color: #0d6efd; /* Blue header color */
+            color: #fff; /* White text color */
+        }
+
+        /* Alternate row background colors */
+        .tbody-custom tr:nth-child(even) {
+            background-color: #f3f4f6; /* Light gray background color */
+        }
+
+        .tbody-custom tr:nth-child(odd) {
+            background-color: #e9ecef; /* Lighter gray background color */
+        }
+
+        /* Table cell padding and text alignment */
+        .table-custom th,
+        .table-custom td {
+            padding: 12px; /* Increased padding */
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        /* Hover effect on table rows */
+        .table-custom tbody tr:hover {
+            background-color: #e2e6ea; /* Light blue background color on hover */
+        }
+
+        /* Styling for the total row */
+        .total-row {
+            background-color: #ffc107; /* Yellow total row color */
+            color: #000; /* Black text color */
+            font-weight: bold; /* Bold text */
+        }
+        
+        /* Container styling */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Heading styling */
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #0d6efd; /* Blue heading color */
+        }
+        
+        /* Responsive table styling */
+        .table-responsive {
+            overflow-x: auto;
+        }
+        
+        /* Sticky header for large screens */
+        @media (min-width: 992px) {
+            .table-responsive {
+                overflow: hidden;
+            }
+            .table-custom th {
+                position: sticky;
+                top: 0;
+                z-index: 1;
+                background-color: #0bdb5bba;  /* Blue header color */
+            }
+        }
+        
+        /* Dropdown styling */
+        #financialYearSelect {
+            width: 200px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Content -->
+    <div class="container mt-4">
+        
+        <div class="table-responsive">
+            <!-- Dropdown for selecting financial year -->
+            <select id="financialYearSelect" class="form-select mb-3">
+                <option value="2023-2024" selected>2023-2024</option>
+                <option value="2024-2025" selected>2024-2025</option>
+                <option value="2022-2023">2025-2026</option>
+                <option value="2022-2023">2026-2027</option>
+                <option value="2022-2023">2027-2028</option>
+                <option value="2022-2023">2028-2029</option>
+                <option value="2022-2023">2029-2030</option> 
+                <!-- Add more options for other financial years if needed -->
+            </select>
+
+            <!-- Table -->
+            <table class="table table-bordered table-custom">
+                <!-- Table headers -->
+                <thead class="thead-custom">
+                    <tr>
+                        <th>DATE</th>
+                        <th>PRODUCTION</th>
+                        <th>POWER UNIT</th>
+                        <th>PER TON UNIT</th>
+                        <th>POWER FACTOR</th>
+                        <th>WATER UNIT</th>
+                        <th>FIRE WOOD</th>
+                        <th>COM LABOUR</th>
+                        <th>BAI</th>
+                        <th>CONT LABOUR</th>
+                    </tr>
+                </thead>
+                <!-- Table body will be populated dynamically -->
+                <tbody id="tableBody" class="tbody-custom"></tbody>
+            </table>
+            <button onclick="exportToExcel()" class="btn btn-primary">Export to Excel</button>
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Moment.js for date formatting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.4/xlsx.full.min.js"></script>
+    <script>
+        function exportToExcel() {
+    const table = document.querySelector('.table-custom');
+    const wb = XLSX.utils.table_to_book(table, { sheet: 'Monthly Production' });
+    XLSX.writeFile(wb, 'monthly_production.xlsx');
+}
+        $(document).ready(function() {
+            // Default financial year
+            let selectedFinancialYear = '2024-2025'; // Default to current financial year
+
+            // Function to fetch data and populate table based on selected financial year
+            function fetchDataAndPopulateTable() {
+                fetch('https://script.google.com/macros/s/AKfycbwlDRQgP1tEsQ3aSmiXtjNWTBzA-0ZGnfhYtiNYxGuSFUpPZi4qEENNQ-hJxgf0eoUc/exec')
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error(`HTTP error! status: ${res.status}`);
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        console.log(data); // Log retrieved data to the console for debugging
+                        let monthData = {};
+                        let totalPowerFactor = 0; // Variable to store the total power factor
+                        let powerFactorCount = 0; // Variable to store the count of power factor entries
+                        // Process each row of data
+                        data.content.forEach(row => {
+                            let date = moment(row[0], moment.ISO_8601);
+                            let month = date.format('MMMM YYYY'); // Extract month and year
+                            let financialYearStart = moment(selectedFinancialYear.split('-')[0] + '-04-01', 'YYYY-MM-DD'); // Financial year starts from April
+                            let financialYearEnd = moment(selectedFinancialYear.split('-')[1] + '-03-31', 'YYYY-MM-DD'); // Financial year ends in March
+                            if (date.isBetween(financialYearStart, financialYearEnd, null, '[]')) { // Check if the row is within the selected financial year
+                                if (!monthData[month]) {
+                                    // Initialize month data if it doesn't exist
+                                    monthData[month] = {
+                                        'PRODUCTION': 0,
+                                        'POWER UNIT': 0,
+                                        'PER TON UNIT': 0, // Added PER TON UNIT initialization
+                                        'POWER FACTOR': 0,
+                                        'WATER UNIT': 0,
+                                        'FIRE WOOD': 0,
+                                        'COM LABOUR': 0,
+                                        'BAI': 0,
+                                        'CONT LABOUR': 0
+                                    };
+                                }
+                                // Sum up numeric values for each month
+                                for (let i = 2; i < row.length; i++) {
+                                    // Check if the value is a number and not empty or non-numeric string
+                                    if (typeof row[i] !== 'undefined' && !isNaN(parseFloat(row[i]))) {
+                                        monthData[month][Object.keys(monthData[month])[i - 2]] += parseFloat(row[i]);
+                                        // Calculate total power factor and count
+                                        if (Object.keys(monthData[month])[i - 2] === 'POWER FACTOR') {
+                                            totalPowerFactor += parseFloat(row[i]);
+                                            powerFactorCount++;
+                                        }
+                                    }
+                                }
+                            }
+                        });
+
+                        // Calculate PER TON UNIT and populate table with monthwise summed data
+                        let tbody = $('#tableBody');
+                        tbody.empty(); // Clear existing table body
+                        let totalRowData = {};
+                        for (const [month, values] of Object.entries(monthData)) {
+                            let tr = $('<tr></tr>');
+                            tr.append($('<td></td>').text(month)); // Month column
+                            // Calculate PER TON UNIT
+                            let perTonUnit = values['PRODUCTION'] !== 0 ? values['POWER UNIT'] / values['PRODUCTION'] : 0;
+                            values['PER TON UNIT'] = perTonUnit;
+                            // Calculate POWER FACTOR
+                            let avgPowerFactor = powerFactorCount !== 0 ? totalPowerFactor / powerFactorCount : 0;
+                            values['POWER FACTOR'] = avgPowerFactor;
+                            // Add summed values for each month
+                            Object.entries(values).forEach(([key, value]) => {
+                                tr.append($('<td></td>').text(value.toFixed(2))); // Round to 2 decimal places
+                                // Add values to the total row data
+                                if (!totalRowData[key]) {
+                                    totalRowData[key] = 0;
+                                }
+                                totalRowData[key] += value;
+                            });
+                            tbody.append(tr);
+                        }
+
+                        // Append total row to the table
+                        let totalRow = $('<tr></tr>').addClass('total-row');
+                        totalRow.append($('<td></td>').text('Total'));
+                        let totalPerTonUnit = totalRowData['POWER UNIT'] !== 0 ? totalRowData['POWER UNIT'] / totalRowData['PRODUCTION'] : 0;
+                        totalRowData['PER TON UNIT'] = totalPerTonUnit;
+                        let totalAvgPowerFactor = powerFactorCount !== 0 ? totalPowerFactor / powerFactorCount : 0;
+                        totalRowData['POWER FACTOR'] = totalAvgPowerFactor;
+                        Object.values(totalRowData).forEach(value => {
+                            totalRow.append($('<td></td>').text(value.toFixed(2)));
+                        });
+                        tbody.append(totalRow);
+                    })
+                    .catch(e => {
+                        console.log('There was a problem with the fetch operation: ' + e.message);
+                    });
+            }
+
+            // Call the function to fetch and populate data for the default financial year
+            fetchDataAndPopulateTable();
+
+            // Financial year selection change event
+            $('#financialYearSelect').change(function() {
+                selectedFinancialYear = $(this).val();
+                // Refresh table data based on the selected financial year
+                fetchDataAndPopulateTable();
+            });
+
+            // Set the default selected financial year in the dropdown
+            $('#financialYearSelect').val(selectedFinancialYear);
+
+            
+        });
+    </script>
+</body>
+</html>

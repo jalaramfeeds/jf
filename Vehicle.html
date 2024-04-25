@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jalaram Dashboard</title>
+  <!-- Favicon -->
+  <link rel="shortcut icon" href="./img/svg/logo.svg" type="image/x-icon">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Reset CSS */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Basic styles */
+    body {
+      font-family: 'Roboto', sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      margin: 0;
+      line-height: 1.6;
+    }
+
+    /* Header styles */
+    header {
+      background-color: #180403;
+      color: #fff;
+      padding: 2px;
+      text-align: center;
+    }
+
+    header h1 {
+      margin-bottom: 10px;
+    }
+
+    /* Sidebar styles */
+    .sidebar {
+      background-color: #180403;;
+      color: #fff;
+      padding: 20px;
+      width: 200px;
+      height: calc(100vh - 50px);
+      position: fixed;
+      top: 80px;
+      left: 0;  
+
+      overflow-y: auto;
+    }
+
+    .sidebar ul {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .sidebar li {
+      margin-bottom: 10px;
+    }
+
+    .sidebar a {
+      text-decoration: none;
+      color: rgb(230, 223, 223);
+      display: block;
+      padding: 10px;
+      transition: background-color 0.3s;
+    }
+
+    .sidebar a:hover {
+      background-color: #08eb72f7;
+    }
+
+    /* Submenu styles */
+    .submenu {
+      margin-left: 15px;
+    }
+
+    .submenu a {
+      padding-left: 20px;
+    }
+
+    /* Main content styles */
+    .main-content {
+      margin-left: 250px;
+      padding: 20px;
+    }
+
+    .card {
+      background-color: #e3d3d2;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 0 10px rgba(14, 5, 5, 0.1);
+    }
+
+    /* Sidebar toggle button styles */
+    .sidebar-toggle {
+      position: fixed;
+      top: 20px;
+      left: 50px;
+      background-color: transparent;
+      border: none;
+      color: #fff;
+      cursor: pointer;
+      font-size: 20px;
+    }
+
+    .sidebar-toggle:hover {
+      color: #ccc;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Jalaram Feeds</h1>
+    
+  </header>
+
+  <!-- Sidebar toggle button -->
+  <button class="sidebar-toggle" title="Toggle sidebar" onclick="toggleSidebar()">
+    <span>&#9776;</span>
+  </button>
+
+  <div class="sidebar" id="sidebar">
+    <ul>
+      <li><a href="#">Dashboard</a></li>
+      <li class="sidebar-item">
+        <a href="index.html" onclick="toggleSubMenu('#production-menu')">Production</a>
+        <ul id="production-menu" class="submenu hidden">
+          <li><a href="Allunit.html">All Units</a></li>
+          <li><a href="PGN.html">Patanjali</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="#" onclick="toggleSubMenu('#calendar-menu')">Calendar</a>
+        <ul id="calendar-menu" class="submenu hidden">
+          <li><a href="#">Menu 1</a></li>
+          <li><a href="#">Menu 2</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="index.html" onclick="toggleSubMenu('#reports-menu')">Reports</a>
+        <ul id="reports-menu" class="submenu hidden">
+          <li><a href="#">Menu 1</a></li>
+          <li><a href="#">Menu 2</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="#" onclick="toggleSubMenu('#messages-menu')">Messages</a>
+        <ul id="messages-menu" class="submenu hidden">
+          <li><a href="#">Menu 1</a></li>
+          <li><a href="#">Menu 2</a></li>
+        </ul>
+      </li>
+      <li class="sidebar-item">
+        <a href="#" onclick="toggleSubMenu('#employees-menu')">Employees</a>
+        <ul id="employees-menu" class="submenu hidden">
+          <li><a href="#">Menu 1</a></li>
+          <li><a href="#">Menu 2</a></li>
+        </ul>
+      </li>
+      <li><a href="#">Vehicle</a></li>
+    </ul>
+  </div>
+
+         <div id="content">
+        <div id="controls">
+            <label for="filter">Filter by:</label>
+            <input type="text" id="filter" placeholder="Enter keyword">
+        </div>
+
+        <table>
+            <!-- Table headers -->
+            <thead>
+                <tr>
+                    <th>SR. No.</th>
+                    <th>TWO/FOUR WHEELER</th>
+                    <th>REGD. NO.</th>
+                    <th>Name Of Owner</th>
+                    <th>COMPANY</th>
+                    <th>MODEL</th>
+                    <th>PUR. DT.</th>
+                    <th>INS. VAL.</th>
+                    <th>PREMIUM</th>
+                    <th>INS. CO.</th>
+                    <th>INS. EXP. DT.</th>
+                    <th>Remark</th>
+                </tr>
+            </thead>
+            <!-- Table body will be populated dynamically -->
+            <tbody id="tableBody"></tbody>
+        </table>
+    </div>
+     <!-- Bootstrap JavaScript dependencies -->
+     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+     <!-- FullCalendar -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/core/main.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/daygrid/main.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/interaction/main.min.js"></script>
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/fullcalendar/5.9.0/timegrid/main.min.js"></script>
+
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            function fetchTableData() {
+                fetch('https://script.google.com/macros/s/AKfycby2-3T3R3LFA5xBRJ9sHA5ps7SlIlHV8YonzCCPFo8lALnYwtsXVzNL2Ym_tZafExqqyg/exec')
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error(`HTTP error! status: ${res.status}`);
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        let tbody = $('#tableBody');
+                        tbody.empty(); // Clear existing table rows
+                        data.content.forEach(row => {
+                            let tr = $('<tr></tr>');
+                            row.forEach(cell => {
+                                let formattedDate = moment(cell, moment.ISO_8601).format('DD-MM-YYYY');
+                                let td = $('<td></td>').text(formattedDate !== 'Invalid date' ? formattedDate : cell);
+                                tr.append(td);
+                            });
+                            tbody.append(tr);
+                        });
+                    })
+                    .catch(e => {
+                        console.log('There was a problem with the fetch operation: ' + e.message);
+                    });
+            }
+
+            // Filter table data
+            $('#filter').on('input', filterTable);
+
+            function filterTable() {
+                let keyword = $(this).val().toLowerCase();
+                $('#tableBody tr').each(function() {
+                    let rowText = $(this).text().toLowerCase();
+                    if (rowText.indexOf(keyword) === -1) {
+                        $(this).hide();
+                    } else {
+                        $(this).show();
+                    }
+                });
+            }
+
+            const menuItems = document.querySelectorAll('.menu-item');
+
+            menuItems.forEach(item => {
+                const submenu = item.querySelector('.submenu');
+                if (submenu) {
+                    item.addEventListener('click', () => {
+                        submenu.classList.toggle('show');
+                    });
+                }
+            });
+
+            // Close submenu when clicking outside of it
+            window.addEventListener('click', function(event) {
+                menuItems.forEach(item => {
+                    const submenu = item.querySelector('.submenu');
+                    if (submenu && !item.contains(event.target)) {
+                        submenu.classList.remove('show');
+                    }
+                });
+            });
+
+            // Fetch table data on page load
+            fetchTableData();
+        });
+    </script>
+</body>
+</html>

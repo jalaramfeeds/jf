@@ -1,0 +1,463 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invoice</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha384-..."
+    crossorigin="anonymous">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom Styles */
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f4f6;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .section {
+            margin-bottom: 20px;
+        }
+        .section label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        .section input[type="text"],
+        .section input[type="email"],
+        .section select {
+            width: calc(100% - 12px);
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .section select {
+            width: 100%;
+        }
+        .button {
+            background-color: #4a90e2;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #357ae8;
+        }
+    </style>
+
+</head>
+<body class="bg-gray-100 font-sans antialiased">
+    <main class="max-w-6xl mx-auto p-8 bg-white shadow-lg rounded-lg">
+        <header class="p-3 mb-1 flex justify-between items-center bg-gradient-to-r from-green-400 to-blue-500 rounded-t-lg">
+            <h3 class="text-2xl font-semibold text-white flex-grow text-center">Tax Invoice</h3>
+            <!-- Spacer to push the print button to the right -->
+            
+            
+        </header>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-3">
+            <!-- Company Details -->
+            <div class="border border-gray-200 rounded-lg p-4">
+                <label for="companyName" class="block text-sm font-medium mb-2">Company Name: *</label>
+                <input type="text" id="companyName" class="form-input w-full rounded-md mb-2" required />
+                
+                <label for="companyAddress" class="block text-sm font-medium mb-2">Address: *</label>
+                <textarea id="companyAddress" rows="3" class="form-textarea w-full rounded-md mb-2" required></textarea>
+                
+                <label for="companyPhone" class="block text-sm font-medium mb-2">Phone: *</label>
+                <input type="text" id="companyPhone" class="form-input w-full rounded-md mb-2" required />
+                
+                <label for="companyEmail" class="block text-sm font-medium mb-2">Email: *</label>
+                <input type="email" id="companyEmail" class="form-input w-full rounded-md mb-2" required />
+                
+                <label for="customerGST" class="block text-sm font-medium mb-2">GST Number:</label>
+                <input type="text" id="customerGST" class="form-input w-full rounded-md" />
+            </div>
+            <!-- Invoice & Customer Details -->
+            <div class="border border-gray-200 rounded-lg p-4 space-y-2">
+                <div class="flex justify-between mb-2">
+                    <div>
+                        <label for="invoiceNumber" class="block text-sm font-medium">Invoice No.:</label>
+                        <input type="text" id="invoiceNumber" class="form-input rounded-md" />
+                    </div>
+                    <div>
+                        <button type="button" class="px-3 py-1 text-sm text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none">
+                            <i class="fas fa-search mr-2"></i>Search
+                        </button>
+                    </div>
+                </div>
+                <div class="flex justify-between mb-2">
+                    <div>
+                        <label for="invoiceDate" class="block text-sm font-medium">Invoice Date:</label>
+                        <input type="date" id="invoiceDate" class="form-input rounded-md" />
+                    </div>
+                    <div>
+                        <label for="paymentMethod" class="block text-sm font-medium">Payment Method:</label>
+                        <select id="paymentMethod" class="form-select rounded-md">
+                            <option value="cash">Cash</option>
+                            <option value="credit">Credit</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="mb-2">
+                    <label for="POS" class="block text-sm font-medium">POS:</label>
+                    <input type="text" id="POS" class="form-input rounded-md" />
+                </div>
+                <div class="flex justify-between mb-2">
+                    <div>
+                        <label for="customerName" class="block text-sm font-medium">Customer Name:</label>
+                        <input type="text" id="customerName" class="form-input rounded-md" />
+                    </div>
+                    <div>
+                        <label for="customerGST" class="block text-sm font-medium">GST Number:</label>
+                        <input type="text" id="customerGST" class="form-input rounded-md" />
+                    </div>
+                </div>
+                <div>
+                    <label for="customerAddress" class="block text-sm font-medium">Address: *</label>
+                    <textarea id="customerAddress" rows="3" class="form-textarea rounded-md" required></textarea>
+                </div>
+            </div>
+        </div>
+        <!-- Transport Details -->
+        <div class="border border-gray-200 rounded-lg p-4">
+            <label for="transportType" class="block text-sm font-medium mb-2">Transport Type:</label>
+            <select id="transportType" class="form-select w-full rounded-md mb-2">
+                <option value="road">Road</option>
+                <option value="rail">Rail</option>
+            </select>
+            
+            <label for="transportName" class="block text-sm font-medium mb-2">Transport Name:</label>
+            <input type="text" id="transportName" class="form-input w-full rounded-md mb-2" />
+            
+            <label for="salespersonName" class="block text-sm font-medium mb-2">Salesperson Name:</label>
+            <input type="text" id="salespersonName" class="form-input w-full rounded-md" />
+        </div>
+
+       <!-- Invoice Items -->
+        <section class="mb-4 flex items-center justify-between">
+            <h3 class="text-lg font-bold">Invoice Items</h3>
+            <button onclick="addRow()" class="bg-green-500 text-white px-3 py-1 rounded-md hover:bg-green-600">
+                <i class="fas fa-plus"></i>
+                Add Item
+            </button>
+        </section>
+
+        <table class="w-full mb-4" id="invoiceTable">
+            <thead>
+                <tr>
+                    <th class="border border-gray-300 px-4 py-2" style="width: 25%;">Description *</th>
+                    <th class="border border-gray-300 px-4 py-2" style="width: 15%;">HSN *</th>
+                    <th class="border border-gray-300 px-4 py-2">Qty *</th>
+                    <th class="border border-gray-300 px-4 py-2">Price *</th>
+                    <th class="border border-gray-300 px-4 py-2"style="width: 5%;">Disc(%)</th>
+                    <th class="border border-gray-300 px-4 py-2"style="width: 1%;">CGST(%)</th>
+                    <th class="border border-gray-300 px-4 py-2"style="width: 1%;">SGST(%)</th>
+                    <th class="border border-gray-300 px-4 py-2">Total</th>
+                    <th class="border border-gray-300 px-4 py-2">Action</th>
+                </tr>
+            </thead>
+            <tbody id="invoiceItems">
+                <!-- Rows will be dynamically added/removed using JavaScript -->
+            </tbody>
+        </table>
+        <div class="flex justify-between">
+            <!-- Summary Section -->
+            <section class="mb-2 w-2/2"> <!-- Set width to half of the container -->
+                <h3 class="text-lg font-bold">Summary</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full"> <!-- Adjusted width to full -->
+                        <thead>
+                            <tr>
+                                <th class="border border-gray-300 px-4 py-2">HSN</th>
+                                <th class="border border-gray-300 px-4 py-2">Taxable</th>
+                                <th class="border border-gray-300 px-4 py-2">CGST(%) </th>
+                                <th class="border border-gray-300 px-4 py-2">CGST Amount</th>
+                                <th class="border border-gray-300 px-4 py-2">SGST(%)</th>
+                                <th class="border border-gray-300 px-4 py-2">SGST Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody id="summaryTableBody">
+                            <!-- Summary data will be filled dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        
+            <!-- Invoice Total Section -->
+            <section class="w-1/3"> <!-- Set width to half of the container -->
+                <div class="bg-white p-8 rounded-lg ">
+                    <h2 class="text-xl font-semibold mb-4">Invoice Total</h2>
+                    <table class="w-full table-auto">
+                        <tbody>
+                            <tr>
+                                <td class="border px-4 py-2">Total :</td>
+                                <td class="border px-4 py-2 text-right" id="subtotal">0 </td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2">Total CGST:</td>
+                                <td class="border px-4 py-2 text-right" id="totalCGST">0 </td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2">Total SGST:</td>
+                                <td class="border px-4 py-2 text-right" id="totalSGST">0 </td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2">Round Off:</td>
+                                <td class="border px-4 py-2 text-right" id="roundOff">0 </td>
+                            </tr>
+                            <tr>
+                                <td class="border px-4 py-2">Grand Total:</td>
+                                <td class="border px-4 py-2 text-right font-semibold" id="grandTotal">0 </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <h5 class="mt-2"><b>Amount In Words:</b> <span id="amountInWords"></span></h5>
+
+        <div style="text-align: right;">
+            <button onclick="window.print()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                <i class="fas fa-print mr-2"></i>
+                Print Invoice
+            </button>
+        </div>
+
+    </main>
+
+    <script>
+        function addRow() {
+            const tableBody = document.getElementById('invoiceItems');
+            const newRow = `
+                <tr>
+                    <td class="border border-gray-300 px-4 py-2" style="width: 25%;"><input type="text" class="w-full border-gray-300 rounded-md py-1 px-2 description" required></td>
+                    <td class="border border-gray-300 px-4 py-2" style="width: 10%;"><input type="text" class="w-full border-gray-300 rounded-md py-1 px-2 HSN" required></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full border-gray-300 rounded-md py-1 px-2 qty" required></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full border-gray-300 rounded-md py-1 px-2 price" required></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full border-gray-300 rounded-md py-1 px-2 disc"></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full border-gray-300 rounded-md py-1 px-2 cgst"></td>
+                    <td class="border border-gray-300 px-4 py-2"><input type="text" class="w-full border-gray-300 rounded-md py-1 px-2 sgst"></td>
+                    <td class="border border-gray-300 px-4 py-2 total"></td>
+                    <td class="border border-gray-300 px-4 py-2">
+                        <button class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600" onclick="deleteRow(this)">
+    <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+</button
+                    </td>
+                </tr>
+            `;
+            tableBody.insertAdjacentHTML('beforeend', newRow);
+        }
+
+        function deleteRow(button) {
+            button.parentNode.parentNode.remove();
+            calculateTotals();
+        }
+
+        function calculateRowTotal(row) {
+            var qty = parseFloat(row.querySelector(".qty").value) || 0;
+            var price = parseFloat(row.querySelector(".price").value) || 0;
+            var discount = parseFloat(row.querySelector(".disc").value) || 0;
+            var cgst = parseFloat(row.querySelector(".cgst").value) || 0;
+            var sgst = parseFloat(row.querySelector(".sgst").value) || 0;
+
+            var subtotal = (qty * price) - ((qty * price * discount) / 100);
+            var totalCGST = (subtotal * cgst) / 100;
+            var totalSGST = (subtotal * sgst) / 100;
+            var total = subtotal + totalCGST + totalSGST;
+
+            row.querySelector(".total").textContent = total.toFixed(2) + " ";
+
+            return {
+                subtotal: subtotal,
+                totalCGST: totalCGST,
+                totalSGST: totalSGST,
+                total: total
+            };
+        }
+
+        function calculateTotals() {
+    var rows = document.querySelectorAll("#invoiceItems tr");
+    var totalSubtotal = 0;
+    var totalCGST = 0;
+    var totalSGST = 0;
+    var grandTotal = 0;
+
+    rows.forEach(function(row) {
+        var rowTotals = calculateRowTotal(row);
+        totalSubtotal += rowTotals.subtotal;
+        totalCGST += rowTotals.totalCGST;
+        totalSGST += rowTotals.totalSGST;
+        grandTotal += rowTotals.total;
+    });
+
+    document.getElementById("subtotal").textContent = totalSubtotal.toFixed(2) + " ";
+    document.getElementById("totalCGST").textContent = totalCGST.toFixed(2) + " ";
+    document.getElementById("totalSGST").textContent = totalSGST.toFixed(2) + " ";
+    
+    // Add the round-off amount to the grand total
+    var roundOff = (Math.round(grandTotal) - grandTotal).toFixed(2);
+    grandTotal += parseFloat(roundOff);
+    
+    document.getElementById("grandTotal").textContent = grandTotal.toFixed(2) + " ";
+    document.getElementById("roundOff").textContent = roundOff + " ";
+
+       // Call function to convert grand total to words
+       var amountInWords = convertAmountToWords(grandTotal);
+        document.getElementById("amountInWords").textContent = amountInWords;
+    }
+
+    function convertAmountToWords(amount) {
+    // Convert number to words
+    var words = "";
+    // Array of units
+    var units = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+    // Array of tens
+    var tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+    // Array of teens
+    var teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+    // Array of places
+    var places = ["", "Thousand", "Lakh", "Crore"];
+
+    // Convert integer part to words
+    function convertIntegerToWords(num) {
+        var words = "";
+        if (num > 99) {
+            words += units[Math.floor(num / 100)] + " Hundred ";
+            num %= 100;
+        }
+        if (num > 0) {
+            if (num < 10) {
+                words += units[num];
+            } else if (num < 20) {
+                words += teens[num - 10];
+            } else {
+                var unitDigit = num % 10;
+                var tensDigit = Math.floor(num / 10);
+                words += tens[tensDigit];
+                if (unitDigit !== 0) {
+                    words += " " + units[unitDigit];
+                }
+            }
+        }
+        return words.trim();
+    }
+
+    var integerPart = Math.floor(amount);
+    var decimalPart = Math.round((amount - integerPart) * 100); // Get the two decimal digits
+
+    var integerWords = "";
+    var placeCounter = 0;
+    while (integerPart > 0) {
+        var part = integerPart % 1000; // Extract the last three digits
+        if (part > 0) {
+            if (placeCounter > 0) {
+                integerWords = convertIntegerToWords(part) + " " + places[placeCounter] + " " + integerWords;
+            } else {
+                integerWords = convertIntegerToWords(part) + " " + integerWords;
+            }
+        }
+        integerPart = Math.floor(integerPart / 1000); // Move to the next three digits
+        placeCounter++;
+    }
+
+    words = integerWords.trim() + " Rupees"; // Add the integer part in words
+
+    // Add the decimal part in words
+    if (decimalPart > 0) {
+        words += " and " + convertIntegerToWords(decimalPart) + " paise";
+    }
+
+    return words;
+}
+
+window.addEventListener("DOMContentLoaded", function () {
+        const invoiceTable = document.getElementById('invoiceTable');
+        invoiceTable.addEventListener('input', function (event) {
+            if (event.target.classList.contains('qty') || event.target.classList.contains('price') || event.target.classList.contains('disc') || event.target.classList.contains('cgst') || event.target.classList.contains('sgst')) {
+                calculateTotals();
+                updateSummary();
+            }
+        });
+    });
+
+    // Function to add event listeners to input fields in invoice items
+function addInputListeners() {
+    const inputs = document.querySelectorAll("#invoiceItems input, #invoiceItems select");
+    inputs.forEach(function(input) {
+        input.addEventListener('input', function() {
+            updateSummary(); // Call updateSummary function whenever there's an input change
+        });
+    });
+}
+
+// Call addInputListeners function when the document is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    addInputListeners(); // Add input listeners when the document is loaded
+    updateSummary(); // Initial call to updateSummary function
+});
+
+    function updateSummary() {
+    const rows = document.querySelectorAll("#invoiceItems tr");
+    const summaryTableBody = document.getElementById('summaryTableBody');
+    const summaryData = {}; // Object to store summary data
+
+    // Clear existing rows
+    summaryTableBody.innerHTML = "";
+
+    rows.forEach(function(row) {
+        const HSN = row.querySelector(".HSN").value || "-";
+        const qty = parseFloat(row.querySelector(".qty").value) || 0;
+        const price = parseFloat(row.querySelector(".price").value) || 0;
+        const cgst = parseFloat(row.querySelector(".cgst").value) || 0;
+        const sgst = parseFloat(row.querySelector(".sgst").value) || 0;
+        const total = parseFloat(row.querySelector(".total").textContent) || 0;
+
+        // If HSN code doesn't exist in summaryData, initialize it
+        if (!summaryData[HSN]) {
+            summaryData[HSN] = {
+                taxable: 0,
+                cgstAmount: 0,
+                sgstAmount: 0
+            };
+        }
+
+        // Update summaryData
+        summaryData[HSN].taxable += qty * price;
+        summaryData[HSN].cgstAmount += (qty * price * cgst / 100);
+        summaryData[HSN].sgstAmount += (qty * price * sgst / 100);
+    });
+
+    // Populate summary table with summaryData
+    for (const hsn in summaryData) {
+        const { taxable, cgstAmount, sgstAmount } = summaryData[hsn];
+        const newRow = `
+            <tr>
+                <td class="border border-gray-300 px-4 py-2">${hsn}</td>
+                <td class="border border-gray-300 px-4 py-2">${taxable.toFixed(2)}</td>
+                <td class="border border-gray-300 px-4 py-2">${((cgstAmount / taxable) * 100).toFixed(2)}%</td>
+                <td class="border border-gray-300 px-4 py-2">${cgstAmount.toFixed(2)}</td>
+                <td class="border border-gray-300 px-4 py-2">${((sgstAmount / taxable) * 100).toFixed(2)}%</td>
+                <td class="border border-gray-300 px-4 py-2">${sgstAmount.toFixed(2)}</td>
+            </tr>
+        `;
+        summaryTableBody.insertAdjacentHTML('beforeend', newRow);
+    }
+}
+</script>
+</body>
+</html>

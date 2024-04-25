@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="hi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jalaram Feeds</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        /* Custom font */
+        body {
+            font-family: 'Roboto', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+
+    <!-- Content -->
+    <div class="container mx-auto mt-4 px-4">
+       
+        <div class="flex justify-between items-center mb-4">
+            <!-- Dropdown for selecting financial year -->
+            <select id="financialYearSelect" class="form-select mb-3 w-48">
+                <!-- Options will be populated dynamically -->
+            </select>
+            <!-- Search Input -->
+            <input type="text" id="searchInput" placeholder="Search" class="border border-gray-300 rounded-md py-2 px-4 w-72">
+        </div>
+
+        <!-- Table -->
+        <div class="overflow-x-auto">
+            <table class="table-auto min-w-full border-collapse border border-gray-200">
+                <!-- Table headers -->
+                <thead class="bg-green-500 text-white">
+                    <tr>
+                        <!-- <th>DATE</th> -->
+                        <th class="px-4 py-2">UNIT</th>
+                        <th class="px-4 py-2">PRODUCTION</th>
+                        <th class="px-4 py-2">POWER UNIT</th>
+                        <th class="px-4 py-2">PER TON UNIT</th>
+                        <th class="px-4 py-2">POWER FACTOR</th>
+                        <th class="px-4 py-2">WATER UNIT</th>
+                        <th class="px-4 py-2">FIRE WOOD</th>
+                        <th class="px-4 py-2">COM LABOUR</th>
+                        <th class="px-4 py-2">BAI</th>
+                        <th class="px-4 py-2">CONT LABOUR</th>
+                    </tr>
+                </thead>
+                <!-- Table body will be populated dynamically -->
+                <tbody id="tableBody" class="bg-gray-100">
+                    <!-- Table body rows will be populated dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Bootstrap JavaScript -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js"></script>
+    <!-- jQuery -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <!-- Moment.js for date formatting -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Function to populate financial year dropdown
+            function populateFinancialYearDropdown() {
+                const currentYear = moment().year();
+                const nextYear = currentYear + 1;
+                const previousYear = currentYear - 1;
+                const options = `<option value="${currentYear}-${nextYear}">${currentYear}-${nextYear}</option>` +
+                    `<option value="${previousYear}-${currentYear}">${previousYear}-${currentYear}</option>`;
+                $('#financialYearSelect').html(options);
+            }
+
+            // Function to fetch data and populate table
+            function fetchDataAndPopulateTable(selectedFinancialYear) {
+                fetch('https://script.google.com/macros/s/AKfycbwlDRQgP1tEsQ3aSmiXtjNWTBzA-0ZGnfhYtiNYxGuSFUpPZi4qEENNQ-hJxgf0eoUc/exec')
+                    .then(res => {
+                        if (!res.ok) {
+                            throw new Error(`HTTP error! status: ${res.status}`);
+                        }
+                        return res.json();
+                    })
+                    .then(data => {
+                        const filteredData = data.content.filter(row => {
+                            // Extract date from the row (assuming a specific column index)
+                            const date = new Date(row[0]); // Modify index based on your date column
+                            const [startYear, endYear] = selectedFinancialYear.split('-');
+                            const financialYearStart = moment(startYear + '-04-01', 'YYYY-MM-DD'); // April 1st of the selected year
+                            const financialYearEnd = moment(endYear + '-03-31', 'YYYY-MM-DD'); // March 31st of the next year (inclusive)
+
+                            return date >= financialYearStart.toDate() && date <= financialYearEnd.toDate();
+                        });
+
+                        let unitData = {}; // Initialize unitData outside the loop
+
+                        // Process each row of filtered data
+                        filteredData.forEach(row => {
+                            let unit = row[1]; // Get the unit from the row
+                            if (unit.trim() !== '') { // Check if the unit is not blank
+                                if (!unitData[unit]) {
+                                    // Initialize unit data if it doesn't exist
+                                    unitData[unit] = {
+                                        'PRODUCTION': 0,
+                                        'POWER UNIT': 0,
+                                        'PER TON UNIT': 0,
+                                        'POWER FACTOR': 0,
+                                        'WATER UNIT': 0,
+                                        'FIRE WOOD': 0,
+                                        'COM LABOUR': 0,
+                                        'BAI': 0,
+                                        'CONT LABOUR': 0
+                                    };
+                                }
+                                // Sum up numeric values for each unit
+                                for (let i = 2; i < row.length; i++) {
+                                    // Check if the value is a number and not empty or non-numeric string
+                                    if (typeof row[i] !== 'undefined' && !isNaN(parseFloat(row[i]))) {
+                                        unitData[unit][Object.keys(unitData[unit])[i - 2]] += parseFloat(row[i]);
+                                    }
+                                }
+                            }
+                        });
+
+                        let tbody = $('#tableBody');
+                        // Clear existing table body
+                        tbody.empty();
+                        // Populate table with unit-wise summed data
+                        for (const [unit, values] of Object.entries(unitData)) {
+                            let tr = $('<tr></tr>');
+                            // tr.append($('<td></td>').text(selectedFinancialYear)); // Financial year column
+                            tr.append($('<td class="px-4 py-2"></td>').text(unit)); // Unit column
+                            // Add summed values for each unit
+                            Object.values(values).forEach(value => {
+                                tr.append($('<td class="px-4 py-2"></td>').text(value.toFixed(2))); // Round to 2 decimal places
+                            });
+                            tbody.append(tr);
+                        }
+                    })
+                    .catch(e => {
+                        console.log('There was a problem with the fetch operation: ' + e.message);
+                    });
+            }
+
+            // Populate financial year dropdown on page load
+            populateFinancialYearDropdown();
+
+            // Fetch and populate table for the default financial year
+            const selectedFinancialYear = $('#financialYearSelect').val();
+            fetchDataAndPopulateTable(selectedFinancialYear);
+
+            // Financial year selection change event
+            $('#financialYearSelect').change(function() {
+                const selectedFinancialYear = $(this).val();
+                // Refresh table data based on the selected financial year
+                fetchDataAndPopulateTable(selectedFinancialYear);
+            });
+
+            // Search functionality
+            $('#searchInput').on('keyup', function() {
+                let searchText = $(this).val().toLowerCase();
+                $('#tableBody tr').filter(function() {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(searchText) > -1);
+                });
+            });
+        });
+    </script>
+</body>
+
+</html>

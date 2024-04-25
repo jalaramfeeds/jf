@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Invoice</title>
+    
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19" rel="stylesheet">
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+       /* Color Scheme */
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Typography */
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Arial', sans-serif;
+            font-weight: bold;
+            color: #333;
+        }
+
+        /* Buttons */
+        .button {
+            background-color: #4a90e2;
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .button:hover {
+            background-color: #357ae8;
+        }
+
+        /* Borders and Shadows */
+        .section {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #ccc;
+            padding-bottom: 20px;
+        }
+
+        .table-bordered {
+            border-collapse: collapse;
+            border: 1px solid #ccc;
+        }
+
+        .table-bordered th, .table-bordered td {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Invoice Form -->
+        <form method="post" action="https://script.google.com/macros/s/AKfycbxnXFNaSW_g7ORR699jy8LtrmuraPOnuqu-ELdWgzcBqTn4z_ovvQc8IcQSeN27f3E/exec">
+            <!-- Invoice Header -->
+            <div class="card">
+                <div class="card-header bg-primary text-white text-center">
+                    <h1>INVOICE</h1>
+                </div>
+                 <!-- Invoice Header -->
+            
+               
+                <div class="container mx-auto px-4 py-8">
+                <!-- Invoice Header -->
+                    <div class="flex justify-between items-start mb-3">
+                    <!-- Left side -->
+                     <div class="flex flex-col">
+               
+                        <div class="mt-4">
+                            <label class="block text-gray-600">Invoice No.</label>
+                            <input type="text" class="border border-gray-300 px-3 py-2 rounded-md w-full" placeholder="Invoice Number" name="invoice_no">
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-gray-600">Invoice Date</label>
+                            <input type="date" class="border border-gray-300 px-3 py-2 rounded-md w-full" placeholder="dd-mm-yyyy" name="invoice_date">
+                        </div>
+                        <div class="mt-4">
+                            <label class="block text-gray-600">Payment Method</label>
+                            <select class="border border-gray-300 px-3 py-2 rounded-md w-full" name="payment_method">
+                                <option value="cash">Cash</option>
+                                <option value="pos">POS</option>
+                            </select>
+                        </div>
+                        </div>
+                        <!-- Right side -->
+                        <div class="ml-3">
+                            <div class="flex items-center">
+                                <label class="block text-gray-600 mr-2">Customer Name</label>
+                                <input type="text" class="border border-gray-300 px-3 py-2 rounded-md w-full" placeholder="Company Name" name="customer_name">
+                            </div>
+                            <div class="mt-3">
+                                <label class="block text-gray-600">Address</label>
+                                <input type="text" class="border border-gray-300 px-3 py-2 rounded-md w-full" placeholder="Address" name="address">
+                            </div>
+                            <div class="flex flex-col md:flex-row mt-3">
+                                <div class="md:w-1/2 md:mr-3">
+                                    <label class="block text-gray-600">Phone</label>
+                                    <input type="tel" class="border border-gray-300 px-3 py-2 rounded-md w-full" placeholder="Phone Number" name="phone">
+                                </div>
+                                <div class="md:w-1/2 mt-4 md:mt-0">
+                                    <label class="block text-gray-600">Email</label>
+                                    <input type="email" class="border border-gray-300 px-3 py-2 rounded-md w-full" placeholder="Email Address" name="email">
+                                </div>
+                            </div>
+                            <div class="mt-4">
+                                <label class="block text-gray-600">GST Number</label>
+                                <input type="text" class="border border-gray-300 px-3 py-2 rounded-md w-full" placeholder="GST Number" name="gst_number">
+                            </div>
+                        </div>
+                        </div>
+                        
+            <!-- Invoice Items -->
+<div class="mb-3">
+    <h2 class="text-lg font-semibold mb-2 text-gray-800 inline-block">Invoice Items:</h2>
+    <button class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded ml-2" onclick="addRow()"><i class="fas fa-plus"></i></button>
+    <table id="invoiceTable" class="w-full border-collapse border border-gray-300">
+        <!-- Table Header -->
+        <thead>
+            <tr>
+                <th class="py-2 px-4 bg-gray-200 border border-gray-300">Description</th>
+                <th class="py-2 px-4 bg-gray-200 border border-gray-300">HSN</th>
+                <th class="py-2 px-4 bg-gray-200 border border-gray-300">Qty</th>
+                <th class="py-2 px-4 bg-gray-200 border border-gray-300">Price</th>
+                <th class="py-2 px-4 bg-gray-200 border border-gray-300">Disc(%)</th>
+                <th class="py-2 px-4 bg-gray-200 border border-gray-300">CGST(%)</th>
+                <th class="py-2 px-4 bg-gray-200 border border-gray-300">SGST(%)</th>
+                <th class="py-2 px-4 bg-gray-200 border border-gray-300">Total</th>
+                <th class="py-2 px-4 bg-gray-200 border border-gray-300">Action</th>
+            </tr>
+        </thead>
+        <!-- Table Body -->
+        <tbody id="invoiceItems">
+            <!-- Initial row -->
+            <tr id="invoiceRow">
+                <td class="border border-gray-300 px-4 py-2" style="width: 25%;"><input type="text" id="description" class="w-full border-gray-300 rounded-md py-1 px-2 description" required name="description[]"></td>
+                <td class="border border-gray-300 px-4 py-2" style="width: 10%;"><input type="text" id="HSN" class="w-full border-gray-300 rounded-md py-1 px-2 HSN" required name="HSN[]"></td>
+                <td class="border border-gray-300 px-4 py-2"><input type="text" id="qty" class="w-full border-gray-300 rounded-md py-1 px-2 qty" required name="qty[]"></td>
+                <td class="border border-gray-300 px-4 py-2"><input type="text" id="price" class="w-full border-gray-300 rounded-md py-1 px-2 price" required name="price[]"></td>
+                <td class="border border-gray-300 px-4 py-2"><input type="text" id="discount" class="w-full border-gray-300 rounded-md py-1 px-2 disc" name="discount[]"></td>
+                <td class="border border-gray-300 px-4 py-2"><input type="text" id="cgst" class="w-full border-gray-300 rounded-md py-1 px-2 cgst" name="cgst[]"></td>
+                <td class="border border-gray-300 px-4 py-2"><input type="text" id="sgst" class="w-full border-gray-300 rounded-md py-1 px-2 sgst" name="sgst[]"></td>
+                <td class="border border-gray-300 px-4 py-2 total"></td>
+                <td class="border border-gray-300 px-4 py-2">
+                    <button class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600" onclick="deleteRow(this)">
+                        <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+                    </button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+            <!-- Summary -->
+            <div class="flex justify-between">
+                <!-- Summary Section -->
+                <section class="mb-2 w-2/2"> <!-- Set width to half of the container -->
+                    <h3 class="text-lg font-bold">Summary</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full"> <!-- Adjusted width to full -->
+                            <thead>
+                                <tr>
+                                    <th class="border border-gray-300 px-4 py-2">HSN</th>
+                                    <th class="border border-gray-300 px-4 py-2">Taxable</th>
+                                    <th class="border border-gray-300 px-4 py-2">CGST(%) </th>
+                                    <th class="border border-gray-300 px-4 py-2">CGST Amount</th>
+                                    <th class="border border-gray-300 px-4 py-2">SGST(%)</th>
+                                    <th class="border border-gray-300 px-4 py-2">SGST Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryTableBody">
+                                <!-- Summary data will be filled dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+                <!-- Invoice Total Section -->
+                <section class="w-1/3"> <!-- Set width to half of the container -->
+                    <div class="bg-white p-8 rounded-lg">
+                        <h2 class="text-xl font-semibold mb-4">Invoice Total</h2>
+                        <table class="w-full table-auto">
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2">Total :</td>
+                                    <td class="border px-4 py-2 text-right" id="subtotal">0</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2">Total CGST:</td>
+                                    <td class="border px-4 py-2 text-right" id="totalCGST">0</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2">Total SGST:</td>
+                                    <td class="border px-4 py-2 text-right" id="totalSGST">0</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2">Round Off:</td>
+                                    <td class="border px-4 py-2 text-right" id="roundOff">0</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2">Grand Total:</td>
+                                    <td class="border px-4 py-2 text-right font-semibold" id="grandTotal">0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+            </div>
+            <!-- Amount in Words -->
+            <p><strong>Amount in words: <mark id="amountInWords"></mark></strong></p>
+            <!-- Buttons -->
+            <div style="text-align: right;">
+                <button onclick="window.print()" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    <i class="fas fa-print mr-2"></i>
+                    Print
+                </button>
+                <button  type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600">
+                    <i class="fas fa-check mr-2"></i>
+                    Submit
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+              function addRow() {
+    const tableBody = document.getElementById('invoiceItems');
+    const newRow = document.createElement('tr');
+    newRow.innerHTML = `
+    <td class="border border-gray-300 px-4 py-2" style="width: 25%;"><input type="text" name="description[]" class="w-full border-gray-300 rounded-md py-1 px-2 description" required></td>
+<td class="border border-gray-300 px-4 py-2" style="width: 10%;"><input type="text" name="HSN[]" class="w-full border-gray-300 rounded-md py-1 px-2 HSN" required></td>
+<td class="border border-gray-300 px-4 py-2"><input type="text" name="qty[]" class="w-full border-gray-300 rounded-md py-1 px-2 qty" required></td>
+<td class="border border-gray-300 px-4 py-2"><input type="text" name="price[]" class="w-full border-gray-300 rounded-md py-1 px-2 price" required></td>
+<td class="border border-gray-300 px-4 py-2"><input type="text" name="discount[]" class="w-full border-gray-300 rounded-md py-1 px-2 disc"></td>
+<td class="border border-gray-300 px-4 py-2"><input type="text" name="cgst[]" class="w-full border-gray-300 rounded-md py-1 px-2 cgst"></td>
+<td class="border border-gray-300 px-4 py-2"><input type="text" name="sgst[]" class="w-full border-gray-300 rounded-md py-1 px-2 sgst"></td>
+        <td class="border border-gray-300 px-4 py-2 total"></td>
+        <td class="border border-gray-300 px-4 py-2">
+            <button class="bg-red-500 text-white px-2 py-1 rounded-md hover:bg-red-600" onclick="deleteRow(this)">
+                <i class="fas fa-trash-alt"></i> <!-- Font Awesome trash icon -->
+            </button>
+        </td>
+    `;
+    tableBody.appendChild(newRow);
+}
+
+         function deleteRow(button) {
+            button.parentNode.parentNode.remove();
+            calculateTotals();
+         }
+
+         function calculateRowTotal(row) {
+    var qty = parseFloat(row.querySelector("input[name='qty[]']").value) || 0;
+    var price = parseFloat(row.querySelector("input[name='price[]']").value) || 0;
+    var discount = parseFloat(row.querySelector("input[name='discount[]']").value) || 0;
+    var cgst = parseFloat(row.querySelector("input[name='cgst[]']").value) || 0;
+    var sgst = parseFloat(row.querySelector("input[name='sgst[]']").value) || 0;
+
+    var subtotal = (qty * price) - ((qty * price * discount) / 100);
+    var totalCGST = (subtotal * cgst) / 100;
+    var totalSGST = (subtotal * sgst) / 100;
+    var total = subtotal + totalCGST + totalSGST;
+
+    row.querySelector(".total").textContent = total.toFixed(2) + " ";
+
+    return {
+        subtotal: subtotal,
+        totalCGST: totalCGST,
+        totalSGST: totalSGST,
+        total: total
+    };
+}
+
+          function calculateTotals() {
+            var rows = document.querySelectorAll("#invoiceTable tbody tr");
+            var totalSubtotal = 0;
+            var totalCGST = 0;
+            var totalSGST = 0;
+            var grandTotal = 0;
+
+            rows.forEach(function(row) {
+                var rowTotals = calculateRowTotal(row);
+                totalSubtotal += rowTotals.subtotal;
+                totalCGST += rowTotals.totalCGST;
+                totalSGST += rowTotals.totalSGST;
+                grandTotal += rowTotals.total;
+            });
+
+            document.getElementById("subtotal").textContent = totalSubtotal.toFixed(2) + " ";
+            document.getElementById("totalCGST").textContent = totalCGST.toFixed(2) + " ";
+            document.getElementById("totalSGST").textContent = totalSGST.toFixed(2) + " ";
+
+            // Add the round-off amount to the grand total
+            var roundOff = (Math.round(grandTotal) - grandTotal).toFixed(2);
+            grandTotal += parseFloat(roundOff);
+
+            document.getElementById("grandTotal").textContent = grandTotal.toFixed(2) + " ";
+            document.getElementById("roundOff").textContent = roundOff + " ";
+
+            // Call function to convert grand total to words
+            var amountInWords = convertAmountToWords(grandTotal);
+            document.getElementById("amountInWords").innerHTML = "<strong><mark>" + amountInWords + "</mark></strong>";
+          }
+
+          function convertAmountToWords(amount) {
+            // Convert number to words
+            var words = "";
+            // Array of units
+            var units = ["", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine"];
+            // Array of tens
+            var tens = ["", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"];
+            // Array of teens
+            var teens = ["Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"];
+            // Array of places
+            var places = ["", "Thousand", "Lakh", "Crore"];
+
+            // Convert integer part to words
+            function convertIntegerToWords(num) {
+                var words = "";
+                if (num > 99) {
+                    words += units[Math.floor(num / 100)] + " Hundred ";
+                    num %= 100;
+                }
+                if (num > 0) {
+                    if (num < 10) {
+                        words += units[num];
+                    } else if (num < 20) {
+                        words += teens[num - 10];
+                    } else {
+                        var unitDigit = num % 10;
+                        var tensDigit = Math.floor(num / 10);
+                        words += tens[tensDigit];
+                        if (unitDigit !== 0) {
+                            words += " " + units[unitDigit];
+                        }
+                    }
+                }
+                return words.trim();
+            }
+
+            var integerPart = Math.floor(amount);
+            var decimalPart = Math.round((amount - integerPart) * 100); // Get the two decimal digits
+
+            var integerWords = "";
+            var placeCounter = 0;
+            while (integerPart > 0) {
+                var part = integerPart % 1000; // Extract the last three digits
+                if (part > 0) {
+                    if (placeCounter > 0) {
+                        integerWords = convertIntegerToWords(part) + " " + places[placeCounter] + " " + integerWords;
+                    } else {
+                        integerWords = convertIntegerToWords(part) + " " + integerWords;
+                    }
+                }
+                integerPart = Math.floor(integerPart / 1000); // Move to the next three digits
+                placeCounter++;
+            }
+
+            words = integerWords.trim() + " Rupees"; // Add the integer part in words
+
+            // Add the decimal part in words
+            if (decimalPart > 0) {
+                words += " and " + convertIntegerToWords(decimalPart) + " paise";
+            }
+
+            return words;
+         }
+
+         window.addEventListener("DOMContentLoaded", function () {
+            const invoiceTable = document.getElementById('invoiceTable');
+            invoiceTable.addEventListener('input', function (event) {
+                if (event.target.classList.contains('qty') || event.target.classList.contains('price') || event.target.classList.contains('disc') || event.target.classList.contains('cgst') || event.target.classList.contains('sgst')) {
+                    calculateTotals();
+                    updateSummary();
+                }
+            });
+         });
+
+          // Function to add event listeners to input fields in invoice items
+            function addInputListeners() {
+             const inputs = document.querySelectorAll("#invoiceItems input, #invoiceItems select");
+             inputs.forEach(function(input) {
+                input.addEventListener('input', function() {
+                    updateSummary(); // Call updateSummary function whenever there's an input change
+                });
+            });
+         }
+
+         // Call addInputListeners function when the document is loaded
+         document.addEventListener('DOMContentLoaded', function() {
+            addInputListeners(); // Add input listeners when the document is loaded
+            updateSummary(); // Initial call to updateSummary function
+         });
+
+         function updateSummary() {
+            const rows = document.querySelectorAll("#invoiceItems tr");
+            const summaryTableBody = document.getElementById('summaryTableBody');
+            const summaryData = {}; // Object to store summary data
+
+            // Clear existing rows
+            summaryTableBody.innerHTML = "";
+
+            rows.forEach(function(row) {
+                const HSN = row.querySelector(".HSN").value || "-";
+                const qty = parseFloat(row.querySelector(".qty").value) || 0;
+                const price = parseFloat(row.querySelector(".price").value) || 0;
+                const cgst = parseFloat(row.querySelector(".cgst").value) || 0;
+                const sgst = parseFloat(row.querySelector(".sgst").value) || 0;
+                const total = parseFloat(row.querySelector(".total").textContent) || 0;
+
+                // If HSN code doesn't exist in summaryData, initialize it
+                if (!summaryData[HSN]) {
+                    summaryData[HSN] = {
+                        taxable: 0,
+                        cgstAmount: 0,
+                        sgstAmount: 0
+                    };
+                }
+
+                // Update summaryData
+                summaryData[HSN].taxable += qty * price;
+                summaryData[HSN].cgstAmount += (qty * price * cgst / 100);
+                summaryData[HSN].sgstAmount += (qty * price * sgst / 100);
+            });
+
+            // Populate summary table with summaryData
+            for (const hsn in summaryData) {
+                const { taxable, cgstAmount, sgstAmount } = summaryData[hsn];
+                const newRow = `
+                    <tr>
+                        <td class="border border-gray-300 px-4 py-2">${hsn}</td>
+                        <td class="border border-gray-300 px-4 py-2">${taxable.toFixed(2)}</td>
+                        <td class="border border-gray-300 px-4 py-2">${((cgstAmount / taxable) * 100).toFixed(0)}%</td>
+                        <td class="border border-gray-300 px-4 py-2">${cgstAmount.toFixed(2)}</td>
+                        <td class="border border-gray-300 px-4 py-2">${((sgstAmount / taxable) * 100).toFixed(0)}%</td>
+                        <td class="border border-gray-300 px-4 py-2">${sgstAmount.toFixed(2)}</td>
+                    </tr>
+                `;
+                summaryTableBody.insertAdjacentHTML('beforeend', newRow);
+            }
+        }
+        
+      
+  
+    </script>
+    
+</body>
+</html>

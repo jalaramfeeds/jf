@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Order Totals Dashboard (Financial Year)</title>
+    <!-- Include Chart.js for chart rendering -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.0/dist/chart.min.js"></script>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Custom styles */
+        .card-header {
+            background-color: #0a0a0a;
+            color: white;
+            padding: 1.25rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+        }
+
+        .card-body {
+            padding: 1.5rem;
+        }
+
+        .table th,
+        .table td {
+            border: 1px solid #dee2e6;
+            padding: 0.75rem;
+            vertical-align: top;
+        }
+
+        .table th {
+            background-color: #744303df;
+            color: white;
+            font-weight: bold;
+            vertical-align: middle;
+        }
+
+        .monthly-chart {
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+
+    <!-- Content for Patanjali Order -->
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Patanjali Order</h2>
+        <div class="row">
+            <!-- Card for Filter and Table -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">FY Filter</h5>
+                    </div>
+                    <div class="card-body">
+                        <select id="financialYear1" class="form-select form-select-sm mb-3">
+                            <!-- Options will be populated dynamically with JavaScript -->
+                        </select>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Total Orders Received</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monthlyTotalsBody1">
+                                    <!-- Table body will be populated dynamically with JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Card for Chart -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Monthly Order Chart (Received)</h5>
+                        <canvas id="monthlyChart1" class="monthly-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Content for Patanjali Dispatch -->
+    <div class="container mt-5">
+        <h2 class="text-center mb-4">Patanjali Dispatch</h2>
+        <div class="row">
+            <!-- Card for Filter and Table -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">FY Filter</h5>
+                    </div>
+                    <div class="card-body">
+                        <select id="financialYear2" class="form-select form-select-sm mb-3">
+                            <!-- Options will be populated dynamically with JavaScript -->
+                        </select>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Month</th>
+                                        <th>Total Orders Dispatched</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="monthlyTotalsBody2">
+                                    <!-- Table body will be populated dynamically with JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Card for Chart -->
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Monthly Order Chart (Dispatched)</h5>
+                        <canvas id="monthlyChart2" class="monthly-chart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script -->
+    <script>
+        async function fetchData(url) {
+            try {
+                const response = await fetch(url);
+                const data = await response.json();
+                return data.content;
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                return null;
+            }
+        }
+
+        async function visualizeData(financialYear, idSuffix, orderType) {
+            const orders = await fetchData('https://script.google.com/macros/s/AKfycbysEipapo5q2IBn_-SYT0QETFOpZN_GCrI9xveSt6H97wiCX1xqcy-HS83aK4expO5pSQ/exec');
+            if (!orders) {
+                return;
+            }
+
+            const filteredOrders = orders.filter(order => {
+                const date = new Date(order[1]);
+                const orderYear = date.getMonth() >= 3 ? date.getFullYear() : date.getFullYear() - 1;
+                return orderYear === financialYear;
+            });
+
+            const months = {};
+            filteredOrders.forEach(order => {
+                const date = new Date(order[1]);
+                const monthYear = date.toLocaleString('en-US', { month: 'short', year: '2-digit' });
+                const total = orderType === 'received' ? parseFloat(order[10]) : parseFloat(order[11]);
+                months[monthYear] = (months[monthYear] || 0) + total;
+            });
+
+            populateTable(months, `monthlyTotalsBody${idSuffix}`);
+            updateChart(months, `monthlyChart${idSuffix}`, orderType);
+        }
+
+        function populateTable(months, id) {
+            const monthlyTotalsBody = document.getElementById(id);
+            monthlyTotalsBody.innerHTML = '';
+            for (const monthYear in months) {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${monthYear}</td>
+                    <td>${months[monthYear].toFixed(2)}</td>
+                `;
+                monthlyTotalsBody.appendChild(row);
+            }
+        }
+
+        function updateChart(months, id, orderType) {
+            const labels = Object.keys(months);
+            const data = Object.values(months);
+
+            const chartConfig = {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: orderType === 'received' ? 'Total Orders Received' : 'Total Orders Dispatched',
+                        data: data,
+                        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+                        hoverBackgroundColor: 'rgba(255, 99, 132, 0.8)',
+                        borderColor: 'rgba(255, 99, 132, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {},
+                    scales: {
+                        x: {},
+                        y: {}
+                    },
+                    tooltips: {
+                        callbacks: {
+                            label: function(context) {
+                                return `Total Orders: ${context.raw.toFixed(2)}`;
+                            }
+                        }
+                    }
+                }
+            };
+
+            const ctx = document.getElementById(id).getContext('2d');
+            if (window.myCharts && window.myCharts[id]) {
+                window.myCharts[id].destroy();
+            }
+            window.myCharts = window.myCharts || {};
+            window.myCharts[id] = new Chart(ctx, chartConfig);
+        }
+
+        function populateFinancialYearDropdown(id) {
+            const currentYear = new Date().getFullYear();
+            const financialYear = currentYear - (new Date().getMonth() < 3 ? 1 : 0);
+            const financialYearSelect = document.getElementById(id);
+            for (let year = currentYear - 2; year <= currentYear; year++) {
+                const option = document.createElement('option');
+                option.value = year;
+                option.text = `${year} - ${year + 1}`;
+                if (year === financialYear) {
+                    option.selected = true;
+                }
+                financialYearSelect.appendChild(option);
+            }
+        }
+
+        document.getElementById('financialYear1').addEventListener('change', function() {
+            const selectedYear = parseInt(this.value);
+            visualizeData(selectedYear, '1', 'received');
+        });
+
+        document.getElementById('financialYear2').addEventListener('change', function() {
+            const selectedYear = parseInt(this.value);
+            visualizeData(selectedYear, '2', 'dispatched');
+        });
+
+        populateFinancialYearDropdown('financialYear1');
+        populateFinancialYearDropdown('financialYear2');
+        visualizeData(new Date().getFullYear(), '1', 'received');
+        visualizeData(new Date().getFullYear(), '2', 'dispatched');
+    </script>
+</body>
+
+</html>
